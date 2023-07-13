@@ -3,47 +3,45 @@
 //a student must atleast have one book
 //they are assigned in a contiguous fashion
 #include<bits/stdc++.h>
+int countstudents(vector<int> &arr,int pages)
+{
+    int students=1;
+    long long sumpages=0;
+    for(int i=0;i<arr.size();i++)
+    {
+        if(sumpages+arr[i]<=pages)
+        {
+            sumpages+=arr[i];
 
-using namespace std;
-//to check if allocation of books among given students is possible.
-int isPossible(vector < int > & A, int pages, int students) {
-  int cnt = 0;
-  int sumAllocated = 0;
-  for (int i = 0; i < A.size(); i++) {
-    if (sumAllocated + A[i] > pages) {
-      cnt++;
-      sumAllocated = A[i];
-      if (sumAllocated > pages) return false;
-    } else {
-      sumAllocated += A[i];
+        }
+        else
+        {
+            students+=1;
+            sumpages=arr[i];
+        }
     }
-  }
-  if (cnt < students) return true;
-  return false;
+    return students;
 }
-int books(vector < int > & A, int B) {
-  if (B > A.size()) return -1;
-  int low = A[0];
-  int high = 0;
-  //to find minimum value and sum of all pages
-  for (int i = 0; i < A.size(); i++) {
-    high = high + A[i];
-    low = min(low, A[i]);
-  }
-  //binary search
-  while (low <= high) {
-    int mid = (low + high) >> 1;
-    if (isPossible(A, mid, B)) {
-      high = mid - 1;
-    } else {
-      low = mid + 1;
-    }
-  }
-  return low;
-}
-int main() {
-  vector<int> A = {12,34,67,90};
-  int B = 2;
-  cout << "Minimum Possible Number is " << books(A, B);
-  return 0;
+int findPages(vector<int>& arr, int n, int m) 
+{
+   //not possible if the total < the number of students we want to allocate
+   if(m>n) return -1;
+   int low=*max_element(arr.begin(),arr.end());
+   int high=accumulate(arr.begin(),arr.end(),0);
+   while(low<=high)
+   {
+      int  mid=(low+high)/2;
+       int students=countstudents(arr,mid);
+       if(students<m)
+       {
+           high=mid-1;
+
+       }
+       else{
+           low=mid+1;
+
+       }
+   }
+   return low;
+
 }
